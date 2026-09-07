@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import brand_config from '../../../../../brand.config.json';
+import brand_config from 'root/brand.config.json';
 
 /**
  * Alphastream "Moving Cursor with Digits" feature.
@@ -38,7 +38,11 @@ type TDigitAnalysisProps = {
 const WS_URL = 'wss://ws.binaryws.com/websockets/v3';
 
 const getAppId = (): string => {
-    const app_id = brand_config?.app_id?.production;
+    // app_id is optional in brand.config.json (added once you register at
+    // developers.deriv.com), so it's read via a loose cast rather than the
+    // strict config type — TypeScript would otherwise reject the access
+    // when the key is absent.
+    const app_id = (brand_config as { app_id?: { production?: string | number } })?.app_id?.production;
     return app_id && app_id !== 'YOUR_PRODUCTION_APP_ID' ? String(app_id) : '1089'; // 1089 = Deriv's public demo app_id
 };
 

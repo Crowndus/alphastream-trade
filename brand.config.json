@@ -1,7 +1,7 @@
 {
     "brand_name": "Alphastream",
-    "brand_logo": "brand/platform-logo.svg",
-    "brand_logo_dark": "brand/platform-logo.svg",
+    "brand_logo": "brand/brand-logo.svg",
+    "brand_logo_dark": "brand/brand-logo-dark.svg",
     "brand_domain": "alphastream.com",
     "brand_hostname": {
         "staging": "staging.trader.alphastream.com",
@@ -41,10 +41,6 @@
     "api": {
         "staging": "staging-api.deriv.com",
         "production": "api.deriv.com"
-    },
-    "app_id": {
-        "staging": "YOUR_STAGING_APP_ID",
-        "production": "YOUR_PRODUCTION_APP_ID"
     },
     "colors": {
         "primary": "#1AB79D",

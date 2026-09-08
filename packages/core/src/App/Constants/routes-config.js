@@ -11,6 +11,8 @@ const Page404 = React.lazy(() => import(/* webpackChunkName: "404" */ 'Modules/P
 
 const MenuPage = React.lazy(() => import(/* webpackChunkName: "menu" */ 'Modules/Menu'));
 
+const Welcome = React.lazy(() => import(/* webpackChunkName: "welcome" */ 'Modules/Welcome'));
+
 const Trader = React.lazy(() => import(/* webpackChunkName: "trader" */ '@deriv/trader'));
 
 const Reports = React.lazy(() => import(/* webpackChunkName: "reports" */ '@deriv/reports'));
@@ -47,6 +49,12 @@ const getModules = () => {
                     protected: true,
                 },
             ],
+        },
+        {
+            path: routes.welcome,
+            component: Welcome,
+            getTitle: () => localize('Welcome'),
+            protected: true,
         },
         {
             path: routes.menu,

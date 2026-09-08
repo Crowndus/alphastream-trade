@@ -45,14 +45,14 @@
     "colors": {
         "primary": "#1AB79D",
         "secondary": "#6467F2",
-        "tertiary": "#ff6b35",
-        "success": "#4bb4b3",
-        "danger": "#ec3f3f",
-        "warning": "#ffad3a",
+        "tertiary": "#FBBF24",
+        "success": "#22C55E",
+        "danger": "#EF4444",
+        "warning": "#FBBF24",
         "info": "#2196f3",
-        "neutral": "#999999",
-        "black": "#181c25",
-        "white": "#ffffff"
+        "neutral": "#94A3B8",
+        "black": "#0B111E",
+        "white": "#F8FAFC"
     },
     "color_variants": {
         "auto_generate": true,

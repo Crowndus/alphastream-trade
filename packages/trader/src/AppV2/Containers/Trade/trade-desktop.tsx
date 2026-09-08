@@ -28,6 +28,10 @@ import useTabletLandscape from 'AppV2/Hooks/useTabletLandscape';
 import { getDisplayedContractTypes } from 'AppV2/Utils/trade-types-utils';
 import { useTraderStore } from 'Stores/useTraderStores';
 
+import { DigitAnalysis, TDigitAnalysisSymbol, TDigitSelection } from 'Modules/DigitAnalysis';
+
+import { PoweredByDeriv } from '../../Components/PoweredByDeriv';
+
 import { TradeChart } from '../Chart';
 
 import TradeTypes from './trade-types';
@@ -52,6 +56,7 @@ const TradeDesktop = observer(() => {
         onUnmount,
         proposal_info,
         should_show_active_symbols_loading,
+        symbol,
         trade_types: trade_types_store,
         trade_type_tab,
     } = useTraderStore();
@@ -109,6 +114,26 @@ const TradeDesktop = observer(() => {
         [trade_types, onChange]
     );
 
+    // Alphastream: Digit Analysis ("moving cursor with digits") — only makes
+    // sense on volatility index symbols, where last-digit ticks are the
+    // basis for Matches/Differs/Over/Under contracts.
+    const digit_symbols: TDigitAnalysisSymbol[] = ['R_10', 'R_25', 'R_50', 'R_75', 'R_100', '1HZ100V'];
+    const is_digit_symbol = digit_symbols.includes(symbol as TDigitAnalysisSymbol);
+    const digit_contract_type_map: Record<TDigitSelection['trade_type'], string> = {
+        match: 'DIGITMATCH',
+        differ: 'DIGITDIFF',
+        over: 'DIGITOVER',
+        under: 'DIGITUNDER',
+    };
+    const handleDigitSelect = React.useCallback(
+        ({ digit, trade_type }: TDigitSelection) => {
+            onChange({ target: { name: 'contract_type', value: digit_contract_type_map[trade_type] } });
+            onChange({ target: { name: 'barrier_1', value: String(digit) } });
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [onChange]
+    );
+
     React.useEffect(() => {
         onMount();
         return onUnmount;
@@ -153,10 +178,17 @@ const TradeDesktop = observer(() => {
                         </div>
                         <div className='trade-params'>
                             <Guide show_guide_for_selected_contract />
+                            {is_digit_symbol && (
+                                <DigitAnalysis
+                                    symbol={symbol as TDigitAnalysisSymbol}
+                                    onDigitSelect={handleDigitSelect}
+                                />
+                            )}
                             <TradeParameters />
                             <ClosedMarketMessage />
                             {!is_market_closed && <PurchaseButton />}
                             <TradeParamsFooter />
+                            <PoweredByDeriv />
                         </div>
                     </div>
                     {/* Mobile onboarding */}

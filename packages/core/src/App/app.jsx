@@ -61,10 +61,12 @@ const App = ({ root_store }) => {
 
         exchangeCodeForToken(code)
             .then(() => {
-                // Token is now in sessionStorage. Reload to /  so initStore
+                // Token is now in sessionStorage. Reload to /welcome so initStore
                 // picks it up on fresh boot — avoids the race where onClientInit
-                // already ran before the token exchange completed.
-                window.location.replace('/');
+                // already ran before the token exchange completed. Alphastream:
+                // land on the branded welcome screen first, not straight into
+                // the trade page.
+                window.location.replace('/welcome');
             })
             .catch(err => {
                 // eslint-disable-next-line no-console

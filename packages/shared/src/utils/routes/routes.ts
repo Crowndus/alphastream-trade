@@ -4,6 +4,7 @@ export const routes = {
     callback_page: '/callback',
     error404: '/404',
     endpoint: '/endpoint',
+    welcome: '/welcome',
 
     // Trading routes
     menu: '/menu',
@@ -21,6 +22,7 @@ export const DISABLE_LANDSCAPE_BLOCKER_ROUTES = [
     routes.index,
     routes.reports,
     routes.endpoint,
+    routes.welcome,
     /** because contract route has dynamic id */
     '/contract',
 ];

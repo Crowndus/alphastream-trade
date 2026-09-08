@@ -52,3 +52,6 @@ cline_instructions.md
 .env
 .env.local
 .github/workflows/
+node_modules/
+dist/
+*/dist/

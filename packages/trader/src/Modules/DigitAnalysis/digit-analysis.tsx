@@ -1,7 +1,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import brand_config from 'root/brand.config.json';
+// eslint-disable-next-line import/no-relative-packages
+import brand_config from '../../../../../brand.config.json';
 
 /**
  * Alphastream "Moving Cursor with Digits" feature.

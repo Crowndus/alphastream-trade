@@ -174,6 +174,19 @@ export const getOAuthAppId = (): string => {
     return ((config_data.auth as Record<string, unknown>).oauth_app_id as string) ?? '';
 };
 
+/**
+ * Affiliate tracking — from your Deriv partner referral link. Adding these
+ * to the OAuth authorize URL tags both new signups and logins so trades are
+ * correctly attributed to your partner account.
+ */
+export const getAffiliateToken = (): string => {
+    return ((config_data.auth as Record<string, unknown>).affiliate_token as string) ?? '';
+};
+
+export const getUtmCampaign = (): string => {
+    return ((config_data.auth as Record<string, unknown>).utm_campaign as string) ?? '';
+};
+
 export const getOAuthRedirectUri = (): string => {
     const auth = config_data.auth as Record<string, unknown>;
     return isProduction()

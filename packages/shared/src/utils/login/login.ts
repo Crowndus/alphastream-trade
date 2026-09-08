@@ -1,4 +1,11 @@
-import { getAuthBaseUrl, getOAuthAppId, getOAuthClientId, getOAuthRedirectUri, getSignupUrl } from '../brand';
+import {
+    getAffiliateToken,
+    getAuthBaseUrl,
+    getOAuthAppId,
+    getOAuthClientId,
+    getOAuthRedirectUri,
+    getUtmCampaign,
+} from '../brand';
 
 // ---------------------------------------------------------------------------
 // PKCE helpers (duplicated here to avoid circular dependency with core)
@@ -39,8 +46,13 @@ const storePKCEVerifier = (verifier: string): void => {
  * Redirects to the OAuth2 authorize endpoint using PKCE.
  * Uses window.location.replace() so the authorize URL does not appear
  * in browser history (prevents back-button returning to a broken state).
+ *
+ * @param mode 'login' shows Deriv's sign-in form (default). 'signup' shows
+ * the account creation form instead — both redirect back to the same
+ * redirect_uri afterwards with session tokens, landing on the Welcome
+ * screen either way. This replaces the old dead-end raw signup link.
  */
-export const redirectToLogin = async (_language?: string): Promise<void> => {
+export const redirectToLogin = async (_language?: string, mode: 'login' | 'signup' = 'login'): Promise<void> => {
     const verifier = generateCodeVerifier();
     const challenge = await generateCodeChallenge(verifier);
     storePKCEVerifier(verifier);
@@ -60,11 +72,24 @@ export const redirectToLogin = async (_language?: string): Promise<void> => {
     const oauth_app_id = getOAuthAppId();
     if (oauth_app_id) params.set('app_id', oauth_app_id);
 
+    if (mode === 'signup') params.set('prompt', 'registration');
+
+    // Alphastream: tag both new signups and logins with our affiliate
+    // token so trades are correctly attributed to our partner account.
+    const affiliate_token = getAffiliateToken();
+    if (affiliate_token) params.set('affiliate_token', affiliate_token);
+    const utm_campaign = getUtmCampaign();
+    if (utm_campaign) params.set('utm_campaign', utm_campaign);
+
     const auth_url = `${getAuthBaseUrl()}/oauth2/auth?${params}`;
     window.location.replace(auth_url);
 };
 
-export const redirectToSignUp = (_language?: string): void => {
-    const signup_url = getSignupUrl();
-    if (signup_url) window.open(signup_url, '_blank', 'noopener,noreferrer');
+/**
+ * Starts Deriv's account-creation flow via OAuth (prompt=registration)
+ * instead of opening a separate, disconnected signup tab. The user ends up
+ * back on redirect_uri — the same Welcome screen a login produces.
+ */
+export const redirectToSignUp = async (_language?: string): Promise<void> => {
+    await redirectToLogin(_language, 'signup');
 };

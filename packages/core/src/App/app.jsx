@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 
 import { APIProvider, useMobileBridge } from '@deriv/api';
 import { Loading } from '@deriv/components';
-import { initFormErrorMessages, setUrlLanguage, setWebsocket } from '@deriv/shared';
+import { initFormErrorMessages, redirectToSignUp, setUrlLanguage, setWebsocket } from '@deriv/shared';
 import { StoreProvider } from '@deriv/stores';
 import { BreakpointProvider } from '@deriv-com/quill-ui';
 import { getInitialLanguage, initializeI18n, TranslationProvider } from '@deriv-com/translations';
 
 import { clearTokens, exchangeCodeForToken } from 'Services/oauth';
 import WS from 'Services/ws-methods';
-
 import { FORM_ERROR_MESSAGES } from '../Constants/form-error-messages';
 
 import AppContent from './AppContent';
@@ -73,6 +72,19 @@ const App = ({ root_store }) => {
                 console.error('[OAuth] Token exchange failed:', err);
                 cleanURL();
             });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Alphastream: handle a signup handoff from the landing page.
+    // Visiting /?signup=1 immediately starts Deriv's OAuth account-creation
+    // flow (prompt=registration) instead of requiring a separate click once
+    // the trader app has loaded — this is what alphastream.com's "Get
+    // Started" buttons link to.
+    React.useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('signup') === '1' && !params.get('code')) {
+            redirectToSignUp();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

@@ -1,4 +1,11 @@
-import { getAuthBaseUrl, getOAuthAppId, getOAuthClientId, getOAuthRedirectUri } from '@deriv/shared';
+import {
+    getAffiliateToken,
+    getAuthBaseUrl,
+    getOAuthAppId,
+    getOAuthClientId,
+    getOAuthRedirectUri,
+    getUtmCampaign,
+} from '@deriv/shared';
 
 // ---------------------------------------------------------------------------
 // PKCE helpers
@@ -52,7 +59,13 @@ export const clearPKCEVerifier = (): void => {
 // OAuth URL generation
 // ---------------------------------------------------------------------------
 
-export const generateOAuthURL = async (): Promise<string> => {
+/**
+ * @param mode 'login' shows Deriv's sign-in form (default). 'signup' shows
+ * the account creation form instead — both redirect back to the same
+ * redirect_uri afterwards with session tokens, so a single Welcome screen
+ * handles both cases.
+ */
+export const generateOAuthURL = async (mode: 'login' | 'signup' = 'login'): Promise<string> => {
     const verifier = generateCodeVerifier();
     const challenge = await generateCodeChallenge(verifier);
     storePKCEVerifier(verifier);
@@ -71,6 +84,15 @@ export const generateOAuthURL = async (): Promise<string> => {
     });
     const oauth_app_id = getOAuthAppId();
     if (oauth_app_id) params.set('app_id', oauth_app_id);
+
+    if (mode === 'signup') params.set('prompt', 'registration');
+
+    // Alphastream: tag both new signups and logins with our affiliate
+    // token so trades are correctly attributed to our partner account.
+    const affiliate_token = getAffiliateToken();
+    if (affiliate_token) params.set('affiliate_token', affiliate_token);
+    const utm_campaign = getUtmCampaign();
+    if (utm_campaign) params.set('utm_campaign', utm_campaign);
 
     return `${getAuthBaseUrl()}/oauth2/auth?${params}`;
 };

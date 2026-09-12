@@ -117,7 +117,13 @@ const MINIMIZERS = !IS_RELEASE
           new TerserPlugin({
               test: /\.js$/,
               exclude: /(smartcharts)/,
-              parallel: 2,
+              // Alphastream: disabled parallel worker threads. On constrained
+              // CI build machines, worker-thread-based minification has been
+              // producing non-deterministic output across otherwise-identical
+              // builds (a known class of race-condition bug) — sometimes
+              // correct, sometimes a broken/incomplete bundle. Single-threaded
+              // is slower but deterministic.
+              parallel: false,
           }),
           new CssMinimizerPlugin(),
       ];

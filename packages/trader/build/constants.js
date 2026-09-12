@@ -120,7 +120,9 @@ const MINIMIZERS = !IS_RELEASE
           new TerserPlugin({
               test: /\.js$/,
               exclude: /(smartcharts)/,
-              parallel: 2,
+              // Alphastream: disabled parallel workers for build determinism.
+              // See packages/core/build/constants.js for the full explanation.
+              parallel: false,
           }),
           new CssMinimizerPlugin(),
       ];

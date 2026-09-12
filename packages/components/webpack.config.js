@@ -1,4 +1,5 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = function () {
     return {
@@ -69,6 +70,9 @@ module.exports = function () {
         },
         optimization: {
             minimize: true,
+            // Alphastream: disabled parallel workers for build determinism.
+            // See packages/core/build/constants.js for the full explanation.
+            minimizer: [new TerserPlugin({ parallel: false })],
         },
         devServer: {
             static: {

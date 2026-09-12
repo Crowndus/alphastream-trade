@@ -10,10 +10,12 @@ import {
     StandaloneChartAreaRegularIcon,
     StandaloneClockThreeFillIcon,
     StandaloneClockThreeRegularIcon,
+    StandaloneGridFillIcon,
+    StandaloneGridRegularIcon,
     StandaloneHouseBlankFillIcon,
     StandaloneHouseBlankRegularIcon,
 } from '@deriv/quill-icons';
-import { getBrandUrl, routes } from '@deriv/shared';
+import { getBotUrl, getBrandUrl, routes } from '@deriv/shared';
 import { useStore } from '@deriv/stores';
 import { Badge, Navigation } from '@deriv-com/quill-ui';
 import { Localize } from '@deriv-com/translations';
@@ -92,6 +94,13 @@ const BottomNav = observer(({ className }: BottomNavProps) => {
                   ]
                 : []),
             {
+                icon: <StandaloneGridRegularIcon iconSize='sm' fill='var(--color-text-primary)' />,
+                activeIcon: <StandaloneGridFillIcon iconSize='sm' />,
+                label: <Localize i18n_default_text='Bots' />,
+                path: null,
+                action: 'bots' as const,
+            },
+            {
                 icon: <StandaloneBarsRegularIcon iconSize='sm' fill='var(--color-text-primary)' />,
                 activeIcon: <StandaloneBarsRegularIcon iconSize='sm' />,
                 label: <Localize i18n_default_text='Menu' />,
@@ -127,6 +136,12 @@ const BottomNav = observer(({ className }: BottomNavProps) => {
                 const curr = encodeURIComponent(currency || '');
                 window.location.href = `${brandUrl}/home?source=options&acc=options&curr=${curr}${lang_param}`;
             });
+            return;
+        }
+
+        if (item.action === 'bots') {
+            const bot_url = getBotUrl();
+            if (bot_url) window.location.href = bot_url;
             return;
         }
 

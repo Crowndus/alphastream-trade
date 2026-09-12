@@ -267,6 +267,18 @@ export const getHelpCentreUrl = (): string => {
     return substituteDerivDomain(config_data.platform.help_centre_url);
 };
 
+/**
+ * Alphastream's separate Bot Builder app — a different Deriv product/codebase
+ * hosted on its own domain. This just points at it; it's not embedded.
+ */
+export const getBotUrl = (): string => {
+    const bot_url = (config_data.platform as Record<string, unknown>).bot_url as
+        | { staging: string; production: string }
+        | undefined;
+    if (!bot_url) return '';
+    return isProduction() ? bot_url.production : bot_url.staging;
+};
+
 export const getDepositUrl = (): string => {
     const deposit = (config_data as Record<string, unknown>).deposit_url as
         | { staging: string; production: string }

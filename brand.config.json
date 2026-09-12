@@ -12,7 +12,11 @@
         "description": "Institutional intelligence, democratized.",
         "logo": "brand/platform-logo.svg",
         "home_url": "https://alphastream.com/dashboard",
-        "help_centre_url": "https://alphastream.com/help"
+        "help_centre_url": "https://alphastream.com/help",
+        "bot_url": {
+            "staging": "https://alphastream-bot.vercel.app",
+            "production": "https://alphastream-bot.vercel.app"
+        }
     },
     "signup_url": {
         "production": "https://home.deriv.com/dashboard/signup?affiliate_token=YOUR_AFFILIATE_TOKEN&utm_campaign=YOUR_UTM_CAMPAIGN",

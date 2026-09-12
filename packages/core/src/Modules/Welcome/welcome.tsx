@@ -17,7 +17,11 @@ const Welcome = observer(() => {
     const { loginid, currency } = client;
 
     const handleContinue = () => {
-        history.replace(routes.index);
+        // Land on a volatility-index symbol so the Digit Analysis grid
+        // (moving cursor + digit frequencies) is visible immediately,
+        // rather than whatever symbol the app's generic default-picker
+        // happens to choose.
+        history.replace(`${routes.index}?symbol=R_100`);
     };
 
     React.useEffect(() => {

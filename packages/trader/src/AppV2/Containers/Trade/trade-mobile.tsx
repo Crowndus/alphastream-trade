@@ -21,6 +21,8 @@ import { getDisplayedContractTypes } from 'AppV2/Utils/trade-types-utils';
 import { isDigitTradeType } from 'AppV2/Utils/digits';
 import { useTraderStore } from 'Stores/useTraderStores';
 
+import { DigitAnalysis, TDigitAnalysisSymbol, TDigitSelection } from 'Modules/DigitAnalysis';
+
 import { TradeChart } from '../Chart';
 
 import TradeTypes from './trade-types';
@@ -51,6 +53,24 @@ const Trade = observer(() => {
     } = useTraderStore();
     const { trade_types } = useContractsFor();
     useDefaultSymbol(); // This will initialize and set the default symbol
+
+    // Alphastream: Digit Analysis ("moving cursor with digits") for mobile.
+    const digit_symbols: TDigitAnalysisSymbol[] = ['R_10', 'R_25', 'R_50', 'R_75', 'R_100', '1HZ100V'];
+    const is_digit_symbol = digit_symbols.includes(symbol as TDigitAnalysisSymbol);
+    const digit_contract_type_map: Record<TDigitSelection['trade_type'], string> = {
+        match: 'DIGITMATCH',
+        differ: 'DIGITDIFF',
+        over: 'DIGITOVER',
+        under: 'DIGITUNDER',
+    };
+    const handleDigitSelect = React.useCallback(
+        ({ digit, trade_type }: TDigitSelection) => {
+            onChange({ target: { name: 'contract_type', value: digit_contract_type_map[trade_type] } });
+            onChange({ target: { name: 'barrier_1', value: String(digit) } });
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [onChange]
+    );
     const [guide_dtrader_v2] = useLocalStorageData<Record<string, boolean>>('guide_dtrader_v2', {
         trade_types_selection: false,
         trade_page: false,
@@ -124,6 +144,9 @@ const Trade = observer(() => {
                             <MarketSelector />
                             <Guide show_guide_for_selected_contract />
                         </div>
+                        {is_digit_symbol && (
+                            <DigitAnalysis symbol={symbol as TDigitAnalysisSymbol} onDigitSelect={handleDigitSelect} />
+                        )}
                         {isDigitTradeType(contract_type) && <CurrentSpot />}
                         <div className='trade__chart-tooltip'>
                             <section
